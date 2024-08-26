@@ -130,4 +130,4 @@ Be mindful that brute-force attacks could potentially access your data. This pro
 
 ## License
 
-This project is licensed under MIT License. See the `LICENSE` file for more details.
+This project is licensed under GNU General Public License v3.0. See the `LICENSE` file for more details.
