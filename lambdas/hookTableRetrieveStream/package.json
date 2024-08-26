@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "aws-xray-sdk": "^3.9.0",
+    "openpgp": "^5.11.2"
+  }
+}
