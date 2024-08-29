@@ -22,6 +22,9 @@ export const handler = async (event, context) => {
     let body;
     let headers = {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
     };
 
     try {
