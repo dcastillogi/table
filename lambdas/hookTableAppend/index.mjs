@@ -80,14 +80,15 @@ export const handler = async (event, context) => {
                             Key: {
                                 tableId: jsonBody.tableId,
                             },
-                            UpdateExpression: `SET #r = list_append(#r, :r), #c = list_append(#c, :c)`,
+                            UpdateExpression: `SET #r = list_append(#r, :r), #c = list_append(#c, :c), updatedAt = :now`,
                             ExpressionAttributeNames: {
                                 '#r': 'rows',
                                 '#c': 'columns'
                             },
                             ExpressionAttributeValues: {
                                 ":r": [row],
-                                ":c": newColumns
+                                ":c": newColumns,
+                                ":now": new Date().toISOString()
                             }
                         })
                     );

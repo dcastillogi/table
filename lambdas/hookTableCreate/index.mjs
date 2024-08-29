@@ -88,6 +88,8 @@ export const handler = async (event, context) => {
                         },
                         columns: [],    // Initialize columns as an empty array
                         rows: [],       // Initialize rows as an empty array
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
                     },
                 })
             );

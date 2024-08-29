@@ -14,18 +14,18 @@ In my recent projects, I’ve leaned towards serverless architectures for their 
 2. Create a new table by providing a `tableId` and a `password`.
 3. Send data to the table using the `tableId` by making a GET or POST request to `https://api.table.dcastillogi.com/append/{tableId}`. You can include your data as a JSON object in the request body or as query parameters. . For example, using `curl` with query parameters:
 
-   ```bash
-   curl -G "https://api.table.dcastillogi.com/append/table1" --data-urlencode "column1=value1" --data-urlencode "column2=value2"
+    ```bash
+    curl -G "https://api.table.dcastillogi.com/append/table1" --data-urlencode "column1=value1" --data-urlencode "column2=value2"
     ```
 
 4. Access your data on [table.dcastillogi.com](https://table.dcastillogi.com/) with your `tableId` and `password`.
 
 ## Key Features
 
-- Default encryption: Uses Zero-Access policies with OpenPGP.
-- Quick setup: Create your credentials and start using inmediatly.
-- Open source: Review the code to address any security concerns.
-- Easy to use: Send data with a simple webhook call.
+-   Default encryption: Uses Zero-Access policies with OpenPGP.
+-   Quick setup: Create your credentials and start using inmediatly.
+-   Open source: Review the code to address any security concerns.
+-   Easy to use: Send data with a simple webhook call.
 
 ## Architecture
 
@@ -39,7 +39,7 @@ The frontend is developed using Next.js and React, leveraging both Static Site G
 
 ## Database
 
-Webhook Table leverages *DynamoDB*, a NoSQL database service, for flexible and scalable data storage. Below is an example of a user’s table (item/record/document):
+Webhook Table leverages _DynamoDB_, a NoSQL database service, for flexible and scalable data storage. Below is an example of a user’s table (item/record/document):
 
 ```json
 {
@@ -50,12 +50,17 @@ Webhook Table leverages *DynamoDB*, a NoSQL database service, for flexible and s
   },
   "rows": [
     {
-      "column1": "value1",
-      "column2": "value2"
+      "column1_encrypted": "value1_encrypted",
+      "column2_encrypted": "value2_encrypted",
     },
-    ...
+    {
+      "column1_encrypted": "value3_encrypted",
+      "column2_encrypted": "value4_encrypted",
+    }
   ],
-  "columns": ["column1", "column2", "column3"]
+  "columns": ["column1", "column2", "column3"],
+  "updatedAt": "2024-09-01T00:00:00Z",
+  "createdAt": "2024-09-01T00:00:00Z"
 }
 ```
 
@@ -65,56 +70,56 @@ All data is encrypted with the table’s public key. The private key is securely
 
 ### hookTableValidateAndQueue
 
-- **Function**: Validates incoming data before inserting in table and queue it in SQS.
-- **Parameters**: `tableId`, row columns and values
-- **Process**:
-  1. Validate the incoming data for correctness and completeness.
-  2. If the data is valid, queue it in SQS for further processing.
-  3. Return a success message to the user.
-- **Note**: While data insertion is highly likely to proceed without issues, final validation and insertion are handled by [hookTableAppend](#hooktableappend) after the queue.
+-   **Function**: Validates incoming data before inserting in table and queue it in SQS.
+-   **Parameters**: `tableId`, row columns and values
+-   **Process**:
+    1. Validate the incoming data for correctness and completeness.
+    2. If the data is valid, queue it in SQS for further processing.
+    3. Return a success message to the user.
+-   **Note**: While data insertion is highly likely to proceed without issues, final validation and insertion are handled by [hookTableAppend](#hooktableappend) after the queue.
 
 ### hookTableAppend
 
-- **Function**: Adds new rows to the table.
-- **Parameters**: `tableId`, row columns and values
-- **Process**:
-  1. Retrieve and verify the table’s existence.
-  2. Identify and incorporate any new columns into the table schema.
-  3. Encrypt the new row with the public key and add it to the table.
+-   **Function**: Adds new rows to the table.
+-   **Parameters**: `tableId`, row columns and values
+-   **Process**:
+    1. Retrieve and verify the table’s existence.
+    2. Identify and incorporate any new columns into the table schema.
+    3. Encrypt the new row with the public key and add it to the table.
 
 ### hookTableRetrieve
 
-- **Function**: Retrieves data from the user's table.
-- **Parameters**: `publicKey`, `privateKey`, `tableId`, `hCaptchaToken`
-- **Process**:
-  1. Unarmor the private key using the user-provided password.
-  2. Validate the decryption of the private key.
-  3. If valid, return the decrypted table data to the user.
+-   **Function**: Retrieves data from the user's table.
+-   **Parameters**: `publicKey`, `privateKey`, `tableId`, `hCaptchaToken`
+-   **Process**:
+    1. Unarmor the private key using the user-provided password.
+    2. Validate the decryption of the private key.
+    3. If valid, return the decrypted table data to the user.
 
 ### hookTableRetrieveStream
 
-- **Function**: Streams table data as an alternative to `hookTableRetrieve` which sends data until all payload is complete. This aproach alows users to start viewing the data already decrypted. As decryption progresses, additional data is sent to the user, providing a continuous and useful data viewing experience.
-- **Parameters**: `publicKey`, `privateKey`, `tableId`, `hCaptchaToken`
-- **Process**:
-  1. Unarmor the private key using the user-provided password.
-  2. Validate the decryption of the private key.
-  3. If valid, streams the decrypted table row by row.
-- **Note**: AWS weird Lambda’s streaming behavior can cause delays in data delivery. AWS may only stream data once a large chunk is completed rather than sending individual rows in real-time. For more details on this behavior, refer to [Forcing Lambda Response Streaming to Flush Content](https://betterdev.blog/lambda-response-streaming-flush-content/).
+-   **Function**: Streams table data as an alternative to `hookTableRetrieve` which sends data until all payload is complete. This aproach alows users to start viewing the data already decrypted. As decryption progresses, additional data is sent to the user, providing a continuous and useful data viewing experience.
+-   **Parameters**: `publicKey`, `privateKey`, `tableId`, `hCaptchaToken`
+-   **Process**:
+    1. Unarmor the private key using the user-provided password.
+    2. Validate the decryption of the private key.
+    3. If valid, streams the decrypted table row by row.
+-   **Note**: AWS weird Lambda’s streaming behavior can cause delays in data delivery. AWS may only stream data once a large chunk is completed rather than sending individual rows in real-time. For more details on this behavior, refer to [Forcing Lambda Response Streaming to Flush Content](https://betterdev.blog/lambda-response-streaming-flush-content/).
 
 ### hookTableCreate
 
-- **Function**: Creates a new user's table.
-- **Parameters**: `password`, `tableId`, `hCaptchaToken`
-- **Process**:
-  1. Generates a new pair of public and private keys based on `password`.
-  2. Creates a new table with `tableId`.
-  3. Stores the public key.
+-   **Function**: Creates a new user's table.
+-   **Parameters**: `password`, `tableId`, `hCaptchaToken`
+-   **Process**:
+    1. Generates a new pair of public and private keys based on `password`.
+    2. Creates a new table with `tableId`.
+    3. Stores the public key.
 
 ## Security
 
-- **End-to-End Encryption:** Data is encrypted using OpenPGP standards, ensuring that only users with the correct password can access it.
-- **Password Protection:** Your password is never stored in the database. It is only used temporarily during the decryption process and is received from the client each time it is needed.
-- **Zero-Access policies:** Not even system administrators can access unencrypted table's records.
+-   **End-to-End Encryption:** Data is encrypted using OpenPGP standards, ensuring that only users with the correct password can access it.
+-   **Password Protection:** Your password is never stored in the database. It is only used temporarily during the decryption process and is received from the client each time it is needed.
+-   **Zero-Access policies:** Not even system administrators can access unencrypted table's records.
 
 ## Contributions
 
