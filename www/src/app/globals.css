@@ -1,0 +1,141 @@
+body {
+    margin: 0;
+}
+.bg {
+    background-attachment: fixed, fixed, fixed, fixed, fixed, fixed, fixed,
+        fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed, fixed,
+        fixed;
+    background-color: rgb(255, 255, 255);
+    background-image: radial-gradient(
+            50% 50%,
+            rgba(160, 51, 255, 0.024) 0%,
+            rgba(160, 51, 255, 0) 50%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(160, 51, 255, 0.04) 0%,
+            rgba(160, 51, 255, 0) 75%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(160, 51, 255, 0.063) 0%,
+            rgba(160, 51, 255, 0) 100%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(24, 119, 242, 0.024) 0%,
+            rgba(24, 119, 242, 0) 50%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(24, 119, 242, 0.04) 0%,
+            rgba(24, 119, 242, 0) 75%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(24, 119, 242, 0.063) 0%,
+            rgba(24, 119, 242, 0) 100%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(255, 108, 92, 0.024) 0%,
+            rgba(255, 108, 92, 0) 50%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(255, 108, 92, 0.04) 0%,
+            rgba(255, 108, 92, 0) 75%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(255, 108, 92, 0.063) 0%,
+            rgba(255, 108, 92, 0) 100%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(245, 206, 51, 0.024) 0%,
+            rgba(245, 206, 51, 0) 50%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(245, 206, 51, 0.04) 0%,
+            rgba(245, 206, 51, 0) 75%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(245, 206, 51, 0.063) 0%,
+            rgba(245, 206, 51, 0) 100%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(37, 211, 102, 0.024) 0%,
+            rgba(37, 211, 102, 0) 50%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(37, 211, 102, 0.04) 0%,
+            rgba(37, 211, 102, 0) 75%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(37, 211, 102, 0.063) 0%,
+            rgba(37, 211, 102, 0) 100%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(24, 119, 242, 0.024) 0%,
+            rgba(24, 119, 242, 0) 50%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(24, 119, 242, 0.04) 0%,
+            rgba(24, 119, 242, 0) 75%
+        ),
+        radial-gradient(
+            50% 50%,
+            rgba(24, 119, 242, 0.063) 0%,
+            rgba(24, 119, 242, 0) 100%
+        );
+    background-position-x: 312.872803px, 312.872803px, 312.872803px, -824px,
+        -824px, -824px, 109.9216px, 109.9216px, 109.9216px, 87.673599px,
+        87.673599px, 87.673599px, -403.759979px, -403.759979px, -403.759979px,
+        -824px, -824px, -824px;
+    background-position-y: -163.755188px, -163.755188px, -163.755188px,
+        403.074402px, 403.074402px, 403.074402px, -426.528778px, -426.528778px,
+        -426.528778px, -728.85437px, -728.85437px, -728.85437px, -531.835999px,
+        -531.835999px, -531.835999px, -227.779984px, -227.779984px,
+        -227.779984px;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
+        no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
+        no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
+        no-repeat;
+    background-size: 1289.147949px 816.007202px, 1289.147949px 816.007202px,
+        1289.147949px 816.007202px, 1869.326294px 1198.425537px,
+        1869.326294px 1198.425537px, 1869.326294px 1198.425537px,
+        1416.950317px 908.954346px, 1416.950317px 908.954346px,
+        1416.950317px 908.954346px, 1073.5896px 688.699158px,
+        1073.5896px 688.699158px, 1073.5896px 688.699158px,
+        1631.519897px 1045.656006px, 1631.519897px 1045.656006px,
+        1631.519897px 1045.656006px, 2472px 1582.079956px, 2472px 1582.079956px,
+        2472px 1582.079956px;
+}
+
+.dark .bg {
+    background-color: rgb(17, 17, 19);
+}
+
+* {
+    --cursor-button: pointer;
+    --cursor-checkbox: default;
+    --cursor-disabled: not-allowed;
+    --cursor-link: pointer;
+    --cursor-menu-item: default;
+    --cursor-radio: default;
+    --cursor-slider-thumb: default;
+    --cursor-slider-thumb-active: default;
+    --cursor-switch: default;
+}
+
+.dark .hcaptcha-container iframe {
+margin-top: 1.2px;
+}
