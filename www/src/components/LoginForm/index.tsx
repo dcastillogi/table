@@ -15,22 +15,16 @@ import Input from "../ui/Input";
 import { AppError, LoginValues, Table } from "@/lib/types";
 import { createHandler } from "@/lib/loginHandler";
 
-const formSchema = z
-    .object({
-        tableId: z.string().min(3, { message: "Your table ID is required" }),
-        password: z.string().min(3, { message: "Your password is required" }),
-        confirmPassword: z.string().optional(),
-        hCaptchaToken: z.string().min(1, { message: "Please complete the captcha" }),
-    })
-    .refine(
-        (data) => data.type !== "create" || data.password === data.confirmPassword,
-        {
-            message: "Passwords must match",
-            path: ["confirmPassword"],
-        }
-    );
+// Base schema without the conditional validation
+const baseSchema = z.object({
+    tableId: z.string().min(3, { message: "Your table ID is required" }),
+    password: z.string().min(3, { message: "Your password is required" }),
+    confirmPassword: z.string().optional(),
+    hCaptchaToken: z.string().min(1, { message: "Please complete the captcha" }),
+});
 
-type FormSchema = z.infer<typeof formSchema>;
+// Type for the form values
+type FormValues = z.infer<typeof baseSchema>;
 
 const LoginFormContent = ({
     setTable,
@@ -48,14 +42,27 @@ const LoginFormContent = ({
     const hcaptchaRef = React.useRef<HCaptcha>(null);
     const searchParams = useSearchParams();
 
+    // Create a memoized schema that depends on the 'type' state
+    const schema = React.useMemo(() => {
+        return type === "create"
+            ? baseSchema.refine(
+                  (data) => data.password === data.confirmPassword,
+                  {
+                      message: "Passwords must match",
+                      path: ["confirmPassword"],
+                  }
+              )
+            : baseSchema;
+    }, [type]);
+
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
         setValue,
         reset,
-    } = useForm<FormSchema>({
-        resolver: zodResolver(formSchema),
+    } = useForm<FormValues>({
+        resolver: zodResolver(schema),
         defaultValues: {
             hCaptchaToken: "",
             tableId: searchParams.get("id") || "",
@@ -67,7 +74,7 @@ const LoginFormContent = ({
         setAppError(null);
     }, [reset, type]);
 
-    const onSubmit: SubmitHandler<FormSchema> = async (data) => {
+    const onSubmit: SubmitHandler<FormValues> = async (data) => {
         try {
             if (type === "login") {
                 const response = await handleDataRetrieval(data);
