@@ -1,17 +1,18 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - npm ci
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: out
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - node_modules/**/*
-appRoot: www
+applications:
+    -
+        frontend:
+            phases:
+                preBuild:
+                    commands: ['pnpm install']
+                build:
+                    commands: ['pnpm run build']
+            artifacts:
+                baseDirectory: out
+                files:
+                    - '**/*'
+            cache:
+                paths:
+                    - 'out/cache/**/*'
+                    - 'node_modules/**/*'
+        appRoot: www
