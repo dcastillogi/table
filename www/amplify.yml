@@ -4,15 +4,14 @@ applications:
         frontend:
             phases:
                 preBuild:
-                    commands: ['npm install'] # Amplify does not support pnpm yet
+                    commands: ['npm install']
                 build:
-                    commands: ['npm run build'] # Amplify does not support pnpm yet
+                    commands: ['npm run build']
             artifacts:
                 baseDirectory: out
                 files:
                     - '**/*'
             cache:
                 paths:
-                    - '.next/cache/**/*'
                     - 'node_modules/**/*'
         appRoot: www
