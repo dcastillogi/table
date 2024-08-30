@@ -26,6 +26,12 @@ const dynamo = DynamoDBDocumentClient.from(client);
  */
 export const handler = awslambda.streamifyResponse(async (event, responseStream, _context) => {
     responseStream.setContentType("text/event-stream");
+    // Set the headers to allow cross-origin requests
+    responseStream.setHeaders({
+        "Access-Control-Allow-Origin": "https://table.dcastillogi.com",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type"
+    });
     try {
         const body = JSON.parse(event.body);
         const password = body.password;
