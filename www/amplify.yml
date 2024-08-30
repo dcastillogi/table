@@ -13,6 +13,6 @@ applications:
                     - '**/*'
             cache:
                 paths:
-                    - 'out/cache/**/*'
+                    - '.next/cache/**/*'
                     - 'node_modules/**/*'
         appRoot: www
