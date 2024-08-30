@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { createHandler } from "@/lib/loginHandler";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 /**
  * LoginForm Component
@@ -28,7 +29,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function LoginForm({
     setTable,
-    handleDataRetrieval
+    handleDataRetrieval,
 }: {
     setTable: React.Dispatch<React.SetStateAction<Table | null>>;
     handleDataRetrieval: (data: LoginValues) => Promise<{
@@ -126,7 +127,7 @@ export default function LoginForm({
                         columns: [],
                         rows: [],
                         totalRows: 0,
-                    })
+                    });
                 }
             }
         } catch (error) {
@@ -183,21 +184,35 @@ export default function LoginForm({
                     )
                 }
 
-                <Input
-                    isSubmitting={isSubmitting}
-                    label="Table ID"
-                    placeholder="Enter your table Id"
-                    boxProps={{ mb: "4" }}
-                    defaultMessage="Is like your username 😉"
-                    error={errors.tableId}
-                    inputProps={{
-                        defaultValue:
-                            searchParams.get("id") && type == "login"
-                                ? searchParams.get("id")!
-                                : undefined,
-                    }}
-                    register={register("tableId", { required: true })}
-                />
+                <Suspense
+                    fallback={
+                        <Input
+                            isSubmitting={isSubmitting}
+                            label="Table ID"
+                            placeholder="Enter your table Id"
+                            boxProps={{ mb: "4" }}
+                            defaultMessage="Is like your username 😉"
+                            error={errors.tableId}
+                            register={register("tableId", { required: true })}
+                        />
+                    }
+                >
+                    <Input
+                        isSubmitting={isSubmitting}
+                        label="Table ID"
+                        placeholder="Enter your table Id"
+                        boxProps={{ mb: "4" }}
+                        defaultMessage="Is like your username 😉"
+                        error={errors.tableId}
+                        inputProps={{
+                            defaultValue:
+                                searchParams.get("id") && type == "login"
+                                    ? searchParams.get("id")!
+                                    : undefined,
+                        }}
+                        register={register("tableId", { required: true })}
+                    />
+                </Suspense>
                 <Input
                     isSubmitting={isSubmitting}
                     label="Password"
