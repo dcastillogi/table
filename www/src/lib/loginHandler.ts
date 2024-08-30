@@ -13,6 +13,7 @@ export const loginHandler = async (
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(d),
+                cache: "no-store",
             }
         );
 
@@ -82,6 +83,7 @@ export const createHandler = async (data: LoginValues) => {
             {
                 method: "POST",
                 body: JSON.stringify(data),
+                cache: "no-store",
             }
         );
 
