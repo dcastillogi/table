@@ -29,7 +29,7 @@ export const handler = async (event, context) => {
             throw new MissingFieldError("password, tableId and hCaptchaToken are required");
         }
 
-        if (!(await verifyHCaptchaToken(hCaptchaToken))) {
+        if (!(await verifyHCaptchaToken(event.hCaptchaToken))) {
             throw new CaptchaError("Invalid hCaptcha token");
         }
 
