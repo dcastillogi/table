@@ -14,11 +14,14 @@ const dynamo = DynamoDBDocumentClient.from(client);
 
 /**
  * Lambda handler function to return decrypted 'tableId' table data using the user's password. Sends a stream of data to the client with the format:
- * columns: [column1, column2, ...]
- * rows: number of rows
- * row0: {column1: value1, column2: value2, ...}
- * row1: {column1: value1, column2: value2, ...}
- * ...
+ * event: columns
+ * data: ['column1', 'column2', ...]
+ * 
+ * event: rows
+ * data: 2
+ * 
+ * event: row0
+ * data: {column1: 'value1', column2: 'value2', ...}
  *
  * @param {Object} event - The Lambda event object containing the password and tableId.
  * @param {Object} context - The Lambda context object.
@@ -43,11 +46,8 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream,
             throw new MissingFieldError("password, tableId and hCaptchaToken are required");
         }
 
-        try {
-            // Validate the hCaptcha token
-            await verifyHCaptchaToken(event.hCaptchaToken);
-        } catch (error) {
-            throw new CaptchaError(error.message);
+        if (!(await verifyHCaptchaToken(hCaptchaToken))) {
+            throw new CaptchaError("Invalid hCaptcha token");
         }
 
         try {

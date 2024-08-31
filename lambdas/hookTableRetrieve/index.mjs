@@ -28,18 +28,15 @@ export const handler = async (event, context) => {
             throw new MissingFieldError("password, tableId and hCaptchaToken are required");
         }
 
-        try {
-            // Validate the hCaptcha token
-            await verifyHCaptchaToken(event.hCaptchaToken);
-        } catch (error) {
-            throw CaptchaError(error.message);
+        if (!(await verifyHCaptchaToken(hCaptchaToken))) {
+            throw new CaptchaError("Invalid hCaptcha token");
         }
 
         try {
             // Validate the tableId
             verifyTableId(event.tableId);
         } catch (error) {
-            throw InvalidTableIdError(error.message);
+            throw new InvalidTableIdError(error.message);
         }
 
         let document;
