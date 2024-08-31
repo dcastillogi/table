@@ -23,43 +23,50 @@ export const loginHandler = async (
 
         const reader = response.body!.getReader();
         const decoder = new TextDecoder();
+        let buffer = "";
 
         while (true) {
             const { done, value } = await reader.read();
 
             if (done) break;
 
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split("\n");
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
 
-            lines.forEach((line) => {
-                if (line.startsWith("columns:")) {
+            for (let i = 0; i < lines.length - 1; i++) {
+                const line = lines[i].trim();
+
+                if (line.startsWith("event: columns")) {
+                    const columns = JSON.parse(line.split("data: ")[1]);
                     setTableData((prevData: any) => ({
                         ...prevData,
-                        columns: JSON.parse(line.substring(8)),
+                        columns,
                     }));
-                } else if (line.startsWith("rows:")) {
+                } else if (line.startsWith("event: rows")) {
+                    const totalRows = parseInt(line.split("data: ")[1], 10);
                     setTableData((prevData: any) => ({
                         ...prevData,
-                        totalRows: parseInt(line.substring(5)),
+                        totalRows,
                     }));
-                } else if (line.startsWith("row")) {
-                    const rowData = JSON.parse(
-                        line.substring(line.indexOf(":") + 1)
-                    );
+                } else if (line.startsWith("event: row")) {
+                    const rowData = JSON.parse(line.split("data: ")[1]);
                     setTableData((prevData: any) => ({
                         ...prevData,
-                        rows: [...prevData.rows, rowData],
+                        rows: [...(prevData?.rows || []), rowData],
                     }));
-                } else {
-                    throw new Error(line);
+                } else if (line.startsWith("event: error")) {
+                    const errorMsg = line.split("data: ")[1];
+                    throw new Error(errorMsg);
                 }
-            });
+            }
+
+            // Keep the last line in the buffer in case it's a partial line
+            buffer = lines[lines.length - 1];
         }
 
         return {
             status: "success",
-        }
+        };
     } catch (error: any) {
         let errorName = "ServerError";
         let errorMessage = "There was an error retrieving the table";
@@ -71,7 +78,7 @@ export const loginHandler = async (
         return {
             status: "error",
             errorName,
-            errorMessage
+            errorMessage,
         };
     }
 };
