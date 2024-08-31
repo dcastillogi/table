@@ -88,47 +88,48 @@ export default function DataTable({ table }: { table: Table }) {
                                     ))}
                                 </RadixTable.Row>
                             </RadixTable.Header>
-
-                            <RadixTable.Body>
-                                {[...Array(table.totalRows)].map(
-                                    (_, row_index) => {
-                                        let flag =
-                                            Object.keys(
-                                                table.rows[row_index] ?? {}
-                                            ).length === 0;
-                                        return (
-                                            <RadixTable.Row
-                                                key={`row-${row_index}`}
-                                            >
-                                                {table.columns.map(
-                                                    (column, col_index) => (
-                                                        <RadixTable.Cell
-                                                            key={`row-${row_index}-column-${col_index}`}
-                                                            style={{
-                                                                whiteSpace:
-                                                                    "nowrap",
-                                                                overflow:
-                                                                    "hidden",
-                                                                textOverflow:
-                                                                    "ellipsis",
-                                                            }}
-                                                        >
-                                                            {table.rows[
-                                                                row_index
-                                                            ]?.[column] ??
-                                                                (flag ? (
-                                                                    <Skeleton height="100%" />
-                                                                ) : (
-                                                                    "-"
-                                                                ))}
-                                                        </RadixTable.Cell>
-                                                    )
-                                                )}
-                                            </RadixTable.Row>
-                                        );
-                                    }
-                                )}
-                            </RadixTable.Body>
+                            {table.rows && (
+                                <RadixTable.Body>
+                                    {[...Array(table.totalRows)].map(
+                                        (_, row_index) => {
+                                            let flag =
+                                                Object.keys(
+                                                    table.rows![row_index] ?? {}
+                                                ).length === 0;
+                                            return (
+                                                <RadixTable.Row
+                                                    key={`row-${row_index}`}
+                                                >
+                                                    {table.columns.map(
+                                                        (column, col_index) => (
+                                                            <RadixTable.Cell
+                                                                key={`row-${row_index}-column-${col_index}`}
+                                                                style={{
+                                                                    whiteSpace:
+                                                                        "nowrap",
+                                                                    overflow:
+                                                                        "hidden",
+                                                                    textOverflow:
+                                                                        "ellipsis",
+                                                                }}
+                                                            >
+                                                                {table.rows![
+                                                                    row_index
+                                                                ]?.[column] ??
+                                                                    (flag ? (
+                                                                        <Skeleton height="100%" />
+                                                                    ) : (
+                                                                        "-"
+                                                                    ))}
+                                                            </RadixTable.Cell>
+                                                        )
+                                                    )}
+                                                </RadixTable.Row>
+                                            );
+                                        }
+                                    )}
+                                </RadixTable.Body>
+                            )}
                         </RadixTable.Root>
                     </Box>
                 </ScrollArea>
