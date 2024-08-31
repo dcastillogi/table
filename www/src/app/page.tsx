@@ -2,7 +2,7 @@
 
 import { Box, Flex, Link, Text } from "@radix-ui/themes";
 import LoginForm from "@/components/LoginForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginValues, Table } from "@/lib/types";
 import EmptyTable from "@/components/EmptyTable";
 import DataTable from "@/components/DataTable";
@@ -16,6 +16,12 @@ export default function Home() {
         return response
     }
 
+    useEffect(() => {
+        if (tableData) {
+            console.log(tableData);
+        }
+    }, [tableData]);
+
     return (
         <Box style={{ whiteSpace: "nowrap" }} minHeight="100svh" className="bg">
             <Flex direction="column" style={{ minHeight: "100svh" }}>
@@ -27,7 +33,7 @@ export default function Home() {
                     position="relative"
                 >
                     {tableData ? (
-                        tableData.totalRows > 0 ? (
+                        tableData.columns.length > 0 ? (
                             <DataTable table={tableData} />
                         ) : (
                             <EmptyTable table={tableData} />

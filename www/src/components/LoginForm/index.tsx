@@ -83,13 +83,6 @@ const LoginFormContent = ({
                         name: response.errorName!,
                         message: response.errorMessage!,
                     });
-                } else {
-                    setTable({
-                        tableId: data.tableId,
-                        columns: [],
-                        rows: [],
-                        totalRows: 0,
-                    });
                 }
             } else if (type === "create") {
                 const response = await createHandler(data);

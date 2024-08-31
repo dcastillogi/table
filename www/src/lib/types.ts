@@ -10,8 +10,8 @@ export type Rows = {
 export type Table = {
     tableId: string;
     columns: string[];
-    rows: Rows[];
-    totalRows: number;
+    rows?: Rows[];
+    totalRows?: number;
 }
 
 export type LoginValues = {
