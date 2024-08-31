@@ -25,13 +25,13 @@ const dynamo = DynamoDBDocumentClient.from(client);
  * @returns {String} - A stream of decrypted table data.
  */
 export const handler = awslambda.streamifyResponse(async (event, responseStream, _context) => {
-    responseStream.setContentType("text/event-stream");
-    // Set the headers to allow cross-origin requests
-    responseStream.setHeaders({
-        "Access-Control-Allow-Origin": "https://table.dcastillogi.com",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-    });
+    const httpResponseMetadata = {
+        statusCode: 200,
+        headers: {
+            "Content-Type": "text/event-stream"
+        }
+    };
+    responseStream = awslambda.HttpResponseStream.from(responseStream, httpResponseMetadata);
     try {
         const body = JSON.parse(event.body);
         const password = body.password;
@@ -47,14 +47,14 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream,
             // Validate the hCaptcha token
             await verifyHCaptchaToken(event.hCaptchaToken);
         } catch (error) {
-            throw CaptchaError(error.message);
+            throw new CaptchaError(error.message);
         }
 
         try {
             // Validate the tableId
             verifyTableId(tableId);
         } catch (error) {
-            throw InvalidTableIdError(error.message);
+            throw new InvalidTableIdError(error.message);
         }
 
         let document;
@@ -93,7 +93,8 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream,
         }
 
         // Stream the columns to the client
-        responseStream.write("columns: " + JSON.stringify(columns) + "\nrows: " + document.Item.rows.length);
+        responseStream.write("event: columns\ndata: " + JSON.stringify(columns) + "\n\n");
+        responseStream.write("event: rows\ndata: " + document.Item.rows.length + "\n\n");
 
 
         // Start decrypting rows and stream them to the client, row by row
@@ -103,13 +104,13 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream,
             for (let column of Object.keys(row)) {
                 decryptedRow[await decryptMessage(privateKey, column, password)] = await decryptMessage(privateKey, row[column], password);
             }
-            responseStream.write(`\nrow${i}: ` + JSON.stringify(decryptedRow));
+            responseStream.write(`event: row${i}\ndata: ` + JSON.stringify(decryptedRow) + "\n\n");
             i++;
         }
 
     } catch (err) {
         // In case of an error, return an error message
-        responseStream.write(`${err.name || "UnknowError"}: ` + err.message);
+        responseStream.write(`event: error\ndata: ${err.name || "UnknowError"}: ` + err.message);
     }
 
     responseStream.end();
