@@ -68,6 +68,7 @@ export const loginHandler = async (
             status: "success",
         };
     } catch (error: any) {
+        console.error(error);
         let errorName = "ServerError";
         let errorMessage = "There was an error retrieving the table";
         if (error.message.includes(": ")) {
