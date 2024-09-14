@@ -28,7 +28,8 @@ type FormValues = z.infer<typeof baseSchema>;
 
 const LoginFormContent = ({
     setTable,
-    handleDataRetrieval
+    handleDataRetrieval,
+    setUserData
 }: {
     setTable: React.Dispatch<React.SetStateAction<Table | null>>;
     handleDataRetrieval: (data: LoginValues) => Promise<{
@@ -36,6 +37,7 @@ const LoginFormContent = ({
         errorName?: string;
         errorMessage?: string;
     }>;
+    setUserData: React.Dispatch<React.SetStateAction<LoginValues | null>>;
 }) => {
     const [type, setType] = React.useState<"login" | "create">("login");
     const [appError, setAppError] = React.useState<AppError | null>(null);
@@ -92,6 +94,7 @@ const LoginFormContent = ({
                         message: response.errorMessage!,
                     });
                 } else {
+                    setUserData(data);
                     setTable({
                         tableId: data.tableId,
                         columns: [],
@@ -211,6 +214,7 @@ export default function LoginForm(props: {
         errorName?: string;
         errorMessage?: string;
     }>;
+    setUserData: React.Dispatch<React.SetStateAction<LoginValues | null>>;
 }) {
     return (
         <Suspense fallback={<Spinner />}>

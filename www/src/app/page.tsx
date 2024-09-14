@@ -14,8 +14,7 @@ export default function Home() {
     const [userData, setUserData] = useState<LoginValues | null>(null);
 
     const handleDataRetrieval = async (d: LoginValues) => {
-        setUserData(d);
-        const response = await loginHandler(d, setTableData);
+        const response = await loginHandler(d, setTableData, setUserData);
         return response;
     };
 
@@ -57,6 +56,7 @@ export default function Home() {
                         <LoginForm
                             setTable={setTableData}
                             handleDataRetrieval={handleDataRetrieval}
+                            setUserData={setUserData}
                         />
                     )}
 

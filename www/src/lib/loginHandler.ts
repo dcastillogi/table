@@ -2,7 +2,8 @@ import { LoginValues, Table } from "./types";
 
 export const loginHandler = async (
     d: LoginValues,
-    setTableData: React.Dispatch<React.SetStateAction<Table | null>>
+    setTableData: React.Dispatch<React.SetStateAction<Table | null>>,
+    setUserData: React.Dispatch<React.SetStateAction<LoginValues | null>>
 ) => {
     try {
         const response = await fetch(
@@ -35,7 +36,6 @@ export const loginHandler = async (
                 throw new Error(buffer.split("\n")[1].split("data: ")[1]);
             } else {
                 const lines = buffer.split("\n\n");
-                console.log(lines);
                 for (let i = 0; i < lines.length - 1; i ++) {
                     const line = lines[i].trim();
 
@@ -81,6 +81,7 @@ export const loginHandler = async (
             }
         }
 
+        setUserData(d);
         return {
             status: "success",
         };
