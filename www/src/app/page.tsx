@@ -7,14 +7,17 @@ import { LoginValues, Table } from "@/lib/types";
 import EmptyTable from "@/components/EmptyTable";
 import DataTable from "@/components/DataTable";
 import { loginHandler } from "@/lib/loginHandler";
+import TableHeading from "@/components/TableHeading";
 
 export default function Home() {
     const [tableData, setTableData] = useState<Table | null>(null);
+    const [userData, setUserData] = useState<LoginValues | null>(null);
 
-    const handleDataRetrieval = async(d: LoginValues) => {
-        const response = await loginHandler(d, setTableData)
-        return response
-    }
+    const handleDataRetrieval = async (d: LoginValues) => {
+        setUserData(d);
+        const response = await loginHandler(d, setTableData);
+        return response;
+    };
 
     useEffect(() => {
         if (tableData) {
@@ -34,12 +37,27 @@ export default function Home() {
                 >
                     {tableData ? (
                         tableData.columns.length > 0 ? (
-                            <DataTable table={tableData} />
+                            <DataTable table={tableData}>
+                                <TableHeading
+                                    tableId={tableData.tableId}
+                                    handleDataRetrieval={handleDataRetrieval}
+                                    data={userData!}
+                                />
+                            </DataTable>
                         ) : (
-                            <EmptyTable table={tableData} />
+                            <EmptyTable table={tableData}>
+                                <TableHeading
+                                    tableId={tableData.tableId}
+                                    handleDataRetrieval={handleDataRetrieval}
+                                    data={userData!}
+                                />
+                            </EmptyTable>
                         )
                     ) : (
-                        <LoginForm setTable={setTableData} handleDataRetrieval={handleDataRetrieval} />
+                        <LoginForm
+                            setTable={setTableData}
+                            handleDataRetrieval={handleDataRetrieval}
+                        />
                     )}
 
                     <Text

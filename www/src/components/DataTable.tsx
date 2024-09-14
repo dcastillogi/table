@@ -4,23 +4,18 @@ import { Table } from "@/lib/types";
 import {
     Badge,
     Box,
-    Button,
     Card,
     Flex,
-    Heading,
     IconButton,
-    Link,
     Table as RadixTable,
     ScrollArea,
     Skeleton,
-    Text,
     TextField,
 } from "@radix-ui/themes";
-import { ModeToggle } from "./ModeToggle";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { CheckIcon, CopyIcon } from "@radix-ui/react-icons";
 
-export default function DataTable({ table }: { table: Table }) {
+export default function DataTable({ table, children }: { table: Table, children: React.ReactNode }) {
     const [copied, setCopied] = useState(false);
     const apiUrl = `https://api.table.dcastillogi.com/v1/append/${table.tableId}`;
 
@@ -46,15 +41,7 @@ export default function DataTable({ table }: { table: Table }) {
                     flexDirection: "column",
                 }}
             >
-                <Flex justify="between" align="center" mb="5">
-                    <Heading as="h1" size="7" mb="-2" trim="start">
-                        Table{" "}
-                        <Text weight="regular" size="4">
-                            ID: {table.tableId}
-                        </Text>
-                    </Heading>
-                    <ModeToggle />
-                </Flex>
+                {children}
 
                 <Card size="1" mb="3">
                     <Flex align="center" gap="2">

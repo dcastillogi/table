@@ -4,21 +4,18 @@ import { Table } from "@/lib/types";
 import {
     Badge,
     Box,
-    Button,
     Card,
     Flex,
-    Heading,
     IconButton,
     Link,
     Text,
     TextField,
 } from "@radix-ui/themes";
-import { ModeToggle } from "./ModeToggle";
 import React, { useEffect, useState } from "react";
 import confetti from "canvas-confetti";
 import { CheckIcon, CopyIcon } from "@radix-ui/react-icons";
 
-export default function EmptyTable({ table }: { table: Table }) {
+export default function EmptyTable({ table, children }: { table: Table, children: React.ReactNode }) {
     const [copied, setCopied] = useState(false);
     const apiUrl = `https://api.table.dcastillogi.com/v1/append/${table.tableId}`;
 
@@ -71,55 +68,48 @@ export default function EmptyTable({ table }: { table: Table }) {
 
     return (
         <Box maxWidth="100%" px="4">
-<Box maxWidth="576px">
-            <Card size="4">
-                <Flex justify="between" align="center" mb="5">
-                    <Heading as="h3" size="6" mb="-2" trim="start">
-                        Table{" "}
-                        <Text weight="regular" size="4">
-                            ID: {table.tableId}
-                        </Text>
-                    </Heading>
-                    <ModeToggle />
-                </Flex>
+            <Box maxWidth="576px">
+                <Card size="4">
+                    {children}
+                    <Text size="3" weight="regular" wrap="pretty">
+                        Your table is ready to receive data! Let{"'"}s get
+                        started by adding your first row.
+                    </Text>
 
-                <Text size="3" weight="regular" wrap="pretty">
-                    Your table is ready to receive data! Let{"'"}s get started
-                    by adding your first row.
-                </Text>
+                    <Card size="1" my="3">
+                        <Flex align="center" gap="2">
+                            <Badge
+                                color="green"
+                                style={{ height: "30px", padding: "0px 10px" }}
+                            >
+                                POST/GET
+                            </Badge>
+                            <TextField.Root
+                                style={{ flexGrow: "1" }}
+                                defaultValue={apiUrl}
+                                readOnly
+                            ></TextField.Root>
+                            <IconButton
+                                variant="soft"
+                                onClick={copyToClipboard}
+                            >
+                                {copied ? <CheckIcon /> : <CopyIcon />}
+                            </IconButton>
+                        </Flex>
+                    </Card>
 
-                <Card size="1" my="3">
-                    <Flex align="center" gap="2">
-                        <Badge
-                            color="green"
-                            style={{ height: "30px", padding: "0px 10px" }}
+                    <Text size="3" weight="regular" wrap="pretty">
+                        Need help or have questions? Check out our{" "}
+                        <Link
+                            target="_blank"
+                            href="https://github.com/dcastillogi/table"
                         >
-                            POST/GET
-                        </Badge>
-                        <TextField.Root
-                            style={{ flexGrow: "1" }}
-                            defaultValue={apiUrl}
-                            readOnly
-                        ></TextField.Root>
-                        <IconButton variant="soft" onClick={copyToClipboard}>
-                            {copied ? <CheckIcon /> : <CopyIcon />}
-                        </IconButton>
-                    </Flex>
+                            Github Repository
+                        </Link>
+                        .
+                    </Text>
                 </Card>
-
-                <Text size="3" weight="regular" wrap="pretty">
-                    Need help or have questions? Check out our{" "}
-                    <Link
-                        target="_blank"
-                        href="https://github.com/dcastillogi/table"
-                    >
-                        Github Repository
-                    </Link>
-                    .
-                </Text>
-            </Card>
+            </Box>
         </Box>
-        </Box>
-        
     );
 }
