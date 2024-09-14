@@ -4,7 +4,7 @@ import {
     UpdateCommand,
     GetCommand
 } from "@aws-sdk/lib-dynamodb";
-import { encryptMessage } from "./lib/utils.mjs";
+import { encryptMessage, generateHash } from "./lib/utils.mjs";
 import { EncryptionError, DBError, TableNotFoundError } from "./lib/errors.mjs";
 
 // Initialize the DynamoDB client
@@ -60,17 +60,32 @@ export const handler = async (event, context) => {
                 // Prepare a row object to hold the encrypted column names and values
                 const row = {};
 
+                // Prepare a columns object to hold the encrypted column names and hash of the original column names
+                const columns = {}
+
                 try {
                     // Encrypt each column name and value in the JSON body
                     for (let row_column of Object.keys(jsonBody.body)) {
-                        row[await encryptMessage(document.Item.keys.publicKey, row_column)] = await encryptMessage(document.Item.keys.publicKey, jsonBody.body[row_column]);
+                        const col = await encryptMessage(document.Item.keys.publicKey, row_column);
+
+                        // Store the encrypted column name and value in the row object
+                        row[col] = await encryptMessage(document.Item.keys.publicKey, jsonBody.body[row_column]);
+
+                        // Generate a hash of the original column name to store in the columns object
+                        columns[await generateHash(row_column)] = col;
                     }
                 } catch (error) {
                     throw new EncryptionError("Error encrypting the data");
                 }
 
-                // Determine which columns are new and need to be added to the document
-                let newColumns = Object.keys(row).filter(column => !document.Item.columns.includes(column));
+
+                // Determine which columns are not in the columns object from the database and add them
+                const totalColumns = {
+                    ...document.Item.columns, // Start with existing columns
+                    ...Object.fromEntries(
+                        Object.entries(columns).filter(([key]) => !(key in document.Item.columns))
+                    )
+                };
 
                 try {
                     // Update the document in DynamoDB by appending the new row and columns
@@ -80,14 +95,14 @@ export const handler = async (event, context) => {
                             Key: {
                                 tableId: jsonBody.tableId,
                             },
-                            UpdateExpression: `SET #r = list_append(#r, :r), #c = list_append(#c, :c), updatedAt = :now`,
+                            UpdateExpression: `SET #r = list_append(#r, :r), #c = :c, updatedAt = :now`,
                             ExpressionAttributeNames: {
                                 '#r': 'rows',
                                 '#c': 'columns'
                             },
                             ExpressionAttributeValues: {
                                 ":r": [row],
-                                ":c": newColumns,
+                                ":c": totalColumns,
                                 ":now": new Date().toISOString()
                             }
                         })

@@ -43,24 +43,27 @@ Webhook Table leverages _DynamoDB_, a NoSQL database service, for flexible and s
 
 ```json
 {
-  "tableId": "........",
-  "keys": {
-    "publicKey": "........",
-    "privateKey": "........"
-  },
-  "rows": [
-    {
-      "column1_encrypted": "value1_encrypted",
-      "column2_encrypted": "value2_encrypted",
+    "tableId": "........",
+    "keys": {
+        "publicKey": "........",
+        "privateKey": "........"
     },
-    {
-      "column1_encrypted": "value3_encrypted",
-      "column2_encrypted": "value4_encrypted",
-    }
-  ],
-  "columns": ["column1", "column2", "column3"],
-  "updatedAt": "2024-09-01T00:00:00Z",
-  "createdAt": "2024-09-01T00:00:00Z"
+    "rows": [
+        {
+            "column1_encrypted": "value1_encrypted",
+            "column2_encrypted": "value2_encrypted"
+        },
+        {
+            "column1_encrypted": "value3_encrypted",
+            "column2_encrypted": "value4_encrypted"
+        }
+    ],
+    "columns": {
+        "column1_hash": "column1_encrypted",
+        "column2_hash": "column2_encrypted"
+    },
+    "updatedAt": "2024-09-01T00:00:00Z",
+    "createdAt": "2024-09-01T00:00:00Z"
 }
 ```
 

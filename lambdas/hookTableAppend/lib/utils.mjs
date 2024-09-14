@@ -1,4 +1,5 @@
 import openpgp from "openpgp";
+import crypto from "crypto";
 
 /**
  * Validates the tableId.
@@ -37,4 +38,14 @@ export async function encryptMessage(publicKeyArmored, message) {
     });
 
     return encrypted;
+}
+
+/**
+ * Generates a hash of the given message using SHA-256.
+ *
+ * @param {string} message - The message to be encrypted.
+ * @returns {Promise<string>} - The hash of the message.
+ */
+export async function generateHash(message) {
+    return crypto.createHash('sha256').update(message).digest('hex');
 }

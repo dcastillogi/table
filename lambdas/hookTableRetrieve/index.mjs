@@ -70,7 +70,7 @@ export const handler = async (event, context) => {
 
         // Start decrypting columns and stream them to the client
         const columns = []
-        for (let column of document.Item.columns) {
+        for (let column of Object.values(document.Item.columns)) {
             columns.push(await decryptMessage(privateKey, column, event.password));
         }
 
