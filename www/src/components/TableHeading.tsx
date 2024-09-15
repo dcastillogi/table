@@ -7,6 +7,7 @@ export default function TableHeading({
     tableId,
     handleDataRetrieval,
     data,
+    children
 }: {
     tableId: string;
     handleDataRetrieval: (data: LoginValues) => Promise<{
@@ -15,6 +16,7 @@ export default function TableHeading({
         errorMessage?: string;
     }>;
     data: LoginValues;
+    children?: React.ReactNode;
 }) {
     return (
         <Flex justify="between" align="center" mb="5">
@@ -25,6 +27,7 @@ export default function TableHeading({
                         ID: {tableId}
                     </Text>
                 </Heading>
+                {children}
                 <RefreshButton handleDataRetrieval={handleDataRetrieval} data={data} />
             </Flex>
             <ModeToggle />

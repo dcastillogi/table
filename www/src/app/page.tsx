@@ -8,6 +8,7 @@ import EmptyTable from "@/components/EmptyTable";
 import DataTable from "@/components/DataTable";
 import { loginHandler } from "@/lib/loginHandler";
 import TableHeading from "@/components/TableHeading";
+import CSVButton from "@/components/CSVButton";
 
 export default function Home() {
     const [tableData, setTableData] = useState<Table | null>(null);
@@ -41,7 +42,9 @@ export default function Home() {
                                     tableId={tableData.tableId}
                                     handleDataRetrieval={handleDataRetrieval}
                                     data={userData!}
-                                />
+                                >
+                                    <CSVButton tableData={tableData} />
+                                </TableHeading>
                             </DataTable>
                         ) : (
                             <EmptyTable table={tableData}>
