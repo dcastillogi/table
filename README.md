@@ -4,6 +4,8 @@
 
 Webhook Table is a reliable, serverless solution designed for effortless data storage via webhooks. This system enables seamless data population in tables through simple webhook calls, paired with a user-friendly interface for data visualization.
 
+![Webhook Table Demo](demo.gif)
+
 ## Why Webhook Table?
 
 In my recent projects, I’ve leaned towards serverless architectures for their scalability and cost-efficiency. However, the need to set up and maintain a database often complicates deployment. Webhook Table addresses this by providing a simple, serverless way to store and retrieve data without the overhead of managing a traditional database. While it’s not a full-fledged database replacement, it’s ideal for use cases like storing form submissions or capturing webhook data without setting up a dedicated database.
