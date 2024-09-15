@@ -45,7 +45,7 @@ export const loginHandler = async (
                         );
                         setTableData({
                             tableId: d.tableId,
-                            columns,
+                            columns: columns.sort(),
                         });
                     } else if (line.startsWith("event: rows")) {
                         const totalRows = parseInt(
